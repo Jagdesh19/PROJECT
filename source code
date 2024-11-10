@@ -1,0 +1,67 @@
+-- Create tables
+CREATE TABLE Authors (
+    AuthorID INT PRIMARY KEY,
+    Name VARCHAR(100)
+);
+
+CREATE TABLE Books (
+    BookID INT PRIMARY KEY,
+    Title VARCHAR(100),
+    AuthorID INT,
+    Genre VARCHAR(50),
+    PublishedYear INT,
+    FOREIGN KEY (AuthorID) REFERENCES Authors(AuthorID)
+);
+
+CREATE TABLE Members (
+    MemberID INT PRIMARY KEY,
+    Name VARCHAR(100),
+    MembershipDate DATE
+);
+
+CREATE TABLE Loans (
+    LoanID INT PRIMARY KEY,
+    BookID INT,
+    MemberID INT,
+    LoanDate DATE,
+    ReturnDate DATE,
+    FOREIGN KEY (BookID) REFERENCES Books(BookID),
+    FOREIGN KEY (MemberID) REFERENCES Members(MemberID)
+);
+
+-- Insert sample data
+INSERT INTO Authors (AuthorID, Name) VALUES (1, 'J.K. Rowling');
+INSERT INTO Authors (AuthorID, Name) VALUES (2, 'George Orwell');
+INSERT INTO Authors (AuthorID, Name) VALUES (3, 'Jane Austen');
+
+INSERT INTO Books (BookID, Title, AuthorID, Genre, PublishedYear) VALUES (1, 'Harry Potter and the Philosopher''s Stone', 1, 'Fantasy', 1997);
+INSERT INTO Books (BookID, Title, AuthorID, Genre, PublishedYear) VALUES (2, '1984', 2, 'Dystopian', 1949);
+INSERT INTO Books (BookID, Title, AuthorID, Genre, PublishedYear) VALUES (3, 'Pride and Prejudice', 3, 'Romance', 1813);
+
+INSERT INTO Members (MemberID, Name, MembershipDate) VALUES (1, 'Alice', '2022-01-15');
+INSERT INTO Members (MemberID, Name, MembershipDate) VALUES (2, 'Bob', '2022-02-20');
+INSERT INTO Members (MemberID, Name, MembershipDate) VALUES (3, 'Charlie', '2022-03-25');
+
+INSERT INTO Loans (LoanID, BookID, MemberID, LoanDate, ReturnDate) VALUES (1, 1, 1, '2022-04-01', '2022-04-15');
+INSERT INTO Loans (LoanID, BookID, MemberID, LoanDate, ReturnDate) VALUES (2, 2, 2, '2022-04-05', '2022-04-20');
+INSERT INTO Loans (LoanID, BookID, MemberID, LoanDate, ReturnDate) VALUES (3, 3, 3, '2022-04-10', '2022-04-25');
+
+-- Basic queries
+-- List all books
+SELECT * FROM Books;
+
+-- List all members
+SELECT * FROM Members;
+
+-- List all loans
+SELECT * FROM Loans;
+
+-- Find books by a specific author
+SELECT Title FROM Books WHERE AuthorID = 1;
+
+-- Find all books currently on loan
+SELECT Books.Title, Members.Name, Loans.LoanDate, Loans.ReturnDate
+FROM Loans
+JOIN Books ON Loans.BookID = Books.BookID
+JOIN Members ON Loans.MemberID = Members.MemberID
+WHERE Loans.ReturnDate IS NULL;
